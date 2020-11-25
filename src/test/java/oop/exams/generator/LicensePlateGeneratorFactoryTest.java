@@ -1,5 +1,6 @@
 package oop.exams.generator;
 
+import oop.exams.model.Region;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -80,8 +81,24 @@ class LicensePlateGeneratorFactoryTest {
             LicensePlateGenerator instance = licensePlateGeneratorFactory.getInstance(state);
 
             // Then:
-            assertThat(instance).isInstanceOf(DefaultLicensePlateGenerator.class);
+            assertThat(instance).isInstanceOf(CenterLicensePlateGenerator.class);
         }
+    }
+
+    //Test added to cover the 100%
+    @Test
+    public void WhenAnyRegionIsSent_ThenTheCorrectObjectIsReturned(){
+        //Given:
+        LicensePlateGeneratorFactory licensePlateGeneratorFactory = new LicensePlateGeneratorFactory();
+
+        //When:
+
+        //Then:
+        assertThat(licensePlateGeneratorFactory.getInstance(Region.NORTH)).isInstanceOf(NorthLicensePlateGenerator.class);
+        assertThat(licensePlateGeneratorFactory.getInstance(Region.SOUTH)).isInstanceOf(SouthLicensePlateGenerator.class);
+        assertThat(licensePlateGeneratorFactory.getInstance(Region.EAST)).isInstanceOf(EastLicensePlateGenerator.class);
+        assertThat(licensePlateGeneratorFactory.getInstance(Region.WEST)).isInstanceOf(WestLicensePlateGenerator.class);
+        assertThat(licensePlateGeneratorFactory.getInstance(Region.CENTER)).isInstanceOf(CenterLicensePlateGenerator.class);
     }
 
 }

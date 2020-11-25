@@ -1,11 +1,13 @@
 package oop.exams.generator;
 
 import oop.exams.exception.BadRegionException;
+import oop.exams.exception.NotAvailableLicensePlateException;
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class NorthLicensePlateGeneratorTest {
 
@@ -52,5 +54,37 @@ public class NorthLicensePlateGeneratorTest {
         assertThatThrownBy(() -> licensePlateProvider.generate(randomStateAbbreviation))
                 .isInstanceOf(BadRegionException.class)
                 .hasMessage("Allowed state codes: BCN, BCS, CHH, COA, NLE, SON, TAM");
+    }
+
+    //Test added to cover the 100%
+    @Test
+    public void compareTwoIdenticalPlates(){
+        //Given:
+        NorthLicensePlateGenerator northLicensePlateGenerator = new NorthLicensePlateGenerator();
+        northLicensePlateGenerator.addPlate("1BCS46");
+        northLicensePlateGenerator.addPlate("1TAM74");
+
+        //When:
+
+        //Then:
+        assertFalse(northLicensePlateGenerator.validatePlates("1BCS46"));
+    }
+
+    @Test
+    public void GivenAFullList_WhenTryToAddANewPlate_ThenThrowsAnException() {
+        //Given:
+        NorthLicensePlateGenerator northLicensePlateGenerator = new NorthLicensePlateGenerator();
+        northLicensePlateGenerator.addPlate("1BCS84");
+        northLicensePlateGenerator.addPlate("1TAM82");
+        northLicensePlateGenerator.addPlate("1BCN38");
+        northLicensePlateGenerator.addPlate("1CHH46");
+        northLicensePlateGenerator.addPlate("1NLE60");
+
+        //When:
+
+        //Then:
+        assertThatThrownBy(() -> northLicensePlateGenerator.generate("1SON59"))
+                .isInstanceOf(NotAvailableLicensePlateException.class)
+                .hasMessage("No hay más placas disponibles");
     }
 }

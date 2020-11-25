@@ -1,11 +1,13 @@
 package oop.exams.generator;
 
 import oop.exams.exception.BadRegionException;
+import oop.exams.exception.NotAvailableLicensePlateException;
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class WestLicensePlateGeneratorTest {
 
@@ -52,5 +54,37 @@ public class WestLicensePlateGeneratorTest {
         assertThatThrownBy(() -> licensePlateProvider.generate(randomStateAbbreviation))
                 .isInstanceOf(BadRegionException.class)
                 .hasMessage("Allowed state codes: COL, JAL, NAY, SIN");
+    }
+
+    //Test added to cover the 100%
+    @Test
+    public void compareTwoIdenticalPlates(){
+        //Given:
+        WestLicensePlateGenerator westLicensePlateGenerator = new WestLicensePlateGenerator();
+        westLicensePlateGenerator.addPlate("25COL");
+        westLicensePlateGenerator.addPlate("28JAL");
+
+        //When:
+
+        //Then:
+        assertFalse(westLicensePlateGenerator.validatePlates("28JAL"));
+    }
+
+    @Test
+    public void GivenAFullList_WhenTryToAddANewPlate_ThenThrowsAnException() {
+        //Given:
+        WestLicensePlateGenerator westLicensePlateGenerator = new WestLicensePlateGenerator();
+        westLicensePlateGenerator.addPlate("25COL");
+        westLicensePlateGenerator.addPlate("22NAY");
+        westLicensePlateGenerator.addPlate("28JAL");
+        westLicensePlateGenerator.addPlate("26SIN");
+        westLicensePlateGenerator.addPlate("20COL");
+
+        //When:
+
+        //Then:
+        assertThatThrownBy(() -> westLicensePlateGenerator.generate("27JAL"))
+                .isInstanceOf(NotAvailableLicensePlateException.class)
+                .hasMessage("No hay más placas disponibles");
     }
 }
